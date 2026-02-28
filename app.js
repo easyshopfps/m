@@ -1195,6 +1195,10 @@ function togglePw(id, btn) {
                 if(id === 'tab-product-ids') {
                     this.loadProductIds();
                 }
+                // โหลดประกาศเมื่อเปิด tab ประกาศ
+                if(id === 'tab-announcement') {
+                    this.loadAnnouncementAdmin();
+                }
                 
                 this.renderAdmin();
             },
@@ -2523,9 +2527,99 @@ function togglePw(id, btn) {
                 } catch(e) { hideProcessing(); NotificationManager.error('ເກີດຂໍ້ຜິດພາດ'); }
             },
 
+            checkPwStrengthChange: function(pw) {
+                this._pwStrength(pw, 'change-strength-fill', 'change-strength-hint');
+            },
+            checkPwStrengthReg: function(pw) {
+                this._pwStrength(pw, 'reg-strength-fill', 'reg-strength-hint');
+            },
+            checkPwStrengthReset: function(pw) {
+                this._pwStrength(pw, 'reset-strength-fill', 'reset-strength-hint');
+            },
+            _pwStrength: function(pw, fillId, hintId) {
+                const fill = document.getElementById(fillId);
+                const hint = document.getElementById(hintId);
+                if(!fill || !hint) return;
+                const checks = {
+                    upper: /[A-Z]/.test(pw),
+                    lower: /[a-z]/.test(pw),
+                    num: /[0-9]/.test(pw),
+                    special: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(pw),
+                    long: pw.length >= 8
+                };
+                const score = Object.values(checks).filter(Boolean).length;
+                const colors = ['#ff2222','#ff6622','#ffaa00','#88dd00','#00ff88'];
+                const widths = ['20%','40%','60%','80%','100%'];
+                fill.style.background = score > 0 ? colors[score-1] : '#333';
+                fill.style.width = score > 0 ? widths[score-1] : '0%';
+                let missing = [];
+                if(!checks.upper) missing.push('ຕົວພິມໃຫຍ່ A-Z');
+                if(!checks.lower) missing.push('ຕົວພິມນ້ອຍ a-z');
+                if(!checks.num) missing.push('ຕົວເລກ 0-9');
+                if(!checks.special) missing.push('ອັກຂະລະພິເສດ !@#$');
+                if(!checks.long) missing.push('ຢ່າງໜ້ອຍ 8 ຕົວ');
+                if(score >= 5) { hint.style.color='#00ff88'; hint.textContent='✓ ລະຫັດຜ່ານເຂັ້ມແຂງ'; }
+                else if(pw.length === 0) { hint.style.color='#aaa'; hint.textContent='ລະຫັດຜ່ານຕ້ອງມີ: ຕົວພິມໃຫຍ່ (A-Z) + ຕົວພິມນ້ອຍ (a-z) + ຕົວເລກ (0-9) + ອັກຂະລະພິເສດ (!@#$)'; }
+                else { hint.style.color='#ffaa00'; hint.textContent='ຍັງຂາດ: ' + missing.join(', '); }
+            },
+
             checkPasswordStrength: function(pw) {
-                const fill = document.getElementById('strength-fill');
-                const hint = document.getElementById('strength-hint');
+                this._pwStrength(pw, 'change-strength-fill', 'change-strength-hint');
+            },
+                if(!fill) return;
+                const checks = {
+                    upper: /[A-Z]/.test(pw),
+                    lower: /[a-z]/.test(pw),
+                    num: /[0-9]/.test(pw),
+                    special: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(pw),
+                    long: pw.length >= 8
+                };
+                const score = Object.values(checks).filter(Boolean).length;
+                const colors = ['#ff2222','#ff6622','#ffaa00','#88dd00','#00ff88'];
+                const widths = ['20%','40%','60%','80%','100%'];
+                fill.style.background = score > 0 ? colors[score-1] : '#333';
+                fill.style.width = score > 0 ? widths[score-1] : '0%';
+                let missing = [];
+                if(!checks.upper) missing.push('ຕົວພິມໃຫຍ່ A-Z');
+                if(!checks.lower) missing.push('ຕົວພິມນ້ອຍ a-z');
+                if(!checks.num) missing.push('ຕົວເລກ 0-9');
+                if(!checks.special) missing.push('ອັກຂະລະພິເສດ !@#$');
+                if(!checks.long) missing.push('ຢ່າງໜ້ອຍ 8 ຕົວ');
+                if(score >= 5) { hint.style.color='#00ff88'; hint.textContent='✓ ລະຫັດຜ່ານເຂັ້ມແຂງ'; }
+                else if(pw.length === 0) { hint.style.color='#aaa'; hint.textContent='ລະຫັດຜ່ານຕ້ອງມີ: ຕົວພິມໃຫຍ່ (A-Z) + ຕົວພິມນ້ອຍ (a-z) + ຕົວເລກ (0-9) + ອັກຂະລະພິເສດ (!@#$)'; }
+                else { hint.style.color='#ffaa00'; hint.textContent='ຍັງຂາດ: ' + missing.join(', '); }
+            },
+
+            checkPasswordStrengthReg: function(pw) {
+                const fill = document.getElementById('reg-strength-fill');
+                const hint = document.getElementById('reg-strength-hint');
+                if(!fill) return;
+                const checks = {
+                    upper: /[A-Z]/.test(pw),
+                    lower: /[a-z]/.test(pw),
+                    num: /[0-9]/.test(pw),
+                    special: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(pw),
+                    long: pw.length >= 8
+                };
+                const score = Object.values(checks).filter(Boolean).length;
+                const colors = ['#ff2222','#ff6622','#ffaa00','#88dd00','#00ff88'];
+                const widths = ['20%','40%','60%','80%','100%'];
+                fill.style.background = score > 0 ? colors[score-1] : '#333';
+                fill.style.width = score > 0 ? widths[score-1] : '0%';
+                let missing = [];
+                if(!checks.upper) missing.push('ຕົວພິມໃຫຍ່ A-Z');
+                if(!checks.lower) missing.push('ຕົວພິມນ້ອຍ a-z');
+                if(!checks.num) missing.push('ຕົວເລກ 0-9');
+                if(!checks.special) missing.push('ອັກຂະລະພິເສດ !@#$');
+                if(!checks.long) missing.push('ຢ່າງໜ້ອຍ 8 ຕົວ');
+                if(score >= 5) { hint.style.color='#00ff88'; hint.textContent='✓ ລະຫັດຜ່ານເຂັ້ມແຂງ'; }
+                else if(pw.length === 0) { hint.style.color='#aaa'; hint.textContent='ລະຫັດຜ່ານຕ້ອງມີ: ຕົວພິມໃຫຍ່ (A-Z) + ຕົວພິມນ້ອຍ (a-z) + ຕົວເລກ (0-9) + ອັກຂະລະພິເສດ (!@#$)'; }
+                else { hint.style.color='#ffaa00'; hint.textContent='ຍັງຂາດ: ' + missing.join(', '); }
+            },
+
+            checkPasswordStrengthReset: function(pw) {
+                const fill = document.getElementById('reset-strength-fill');
+                const hint = document.getElementById('reset-strength-hint');
                 if(!fill) return;
                 const checks = {
                     upper: /[A-Z]/.test(pw),
@@ -2563,12 +2657,8 @@ function togglePw(id, btn) {
                     return;
                 }
                 // ตรวจชื่อผู้ใช้
-                if(!/^[A-Z]/.test(username)) {
-                    NotificationManager.error('ຊື່ຜູ້ໃຊ້: ຕ້ອງຂຶ້ນຕົ້ນດ້ວຍຕົວພິມໃຫຍ່ 1 ຕົວ (A-Z) ຕາມດ້ວຍຕົວອັກສອນໃດກໍໄດ້');
-                    return;
-                }
                 if(username.length < 5) {
-                    NotificationManager.error('ຊື່ຜູ້ໃຊ້: ຕ້ອງມີຢ່າງໜ້ອຍ 5 ຕົວອັກສອນ (ຕົວໃຫຍ່+ຕົວໜ້ອຍ/ຕົວເລກ ລວມກັນ)');
+                    NotificationManager.error('ຊື່ຜູ້ໃຊ້: ຕ້ອງມີຢ່າງໜ້ອຍ 5 ຕົວອັກສອນ');
                     return;
                 }
                 if(username.length > 20) {
@@ -2754,12 +2844,8 @@ function togglePw(id, btn) {
                 if(await CustomConfirm.show('ແນ່ໃຈບໍ່ວ່າຕ້ອງການອອກຈາກລະບົບ?', {title:'ອອກຈາກລະບົບ', icon:'fa-sign-out-alt'})) {
                     currentUser = null;
                     localStorage.removeItem('user_session');
-                    this.updateUserUI();
-                    document.getElementById('user-menu').style.display = 'none';
-                    // Clear all auth forms
-                    this._clearLoginForm();
-                    this._clearRegisterForm();
-                    NotificationManager.info('ອອກຈາກລະບົບສຳເລັດ');
+                    // Reload ໜ້າເວັບໃໝ່
+                    location.reload();
                 }
             },
 
@@ -2870,12 +2956,32 @@ function togglePw(id, btn) {
                     NotificationManager.warning('ກະລຸນາກອກຂໍ້ມູນ');
                     return;
                 }
+                if(current !== currentUser.password) {
+                    NotificationManager.error('ລະຫັດຜ່ານປັດຈຸບັນບໍ່ຖືກ');
+                    return;
+                }
                 if(newPass !== confirm) {
                     NotificationManager.error('ລະຫັດໃໝ່ບໍ່ຕົງກັນ');
                     return;
                 }
-                if(current !== currentUser.password) {
-                    NotificationManager.error('ລະຫັດຜ່ານປັດຈຸບັນບໍ່ຖືກ');
+
+                // ກວດ password strength ເໝືອນຕອນສະໝັກ
+                const checks = {
+                    upper: /[A-Z]/.test(newPass),
+                    lower: /[a-z]/.test(newPass),
+                    num: /[0-9]/.test(newPass),
+                    special: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(newPass),
+                    long: newPass.length >= 8
+                };
+                const score = Object.values(checks).filter(Boolean).length;
+                if(score < 5) {
+                    let missing = [];
+                    if(!checks.upper) missing.push('ຕົວພິມໃຫຍ່ A-Z');
+                    if(!checks.lower) missing.push('ຕົວພິມນ້ອຍ a-z');
+                    if(!checks.num) missing.push('ຕົວເລກ 0-9');
+                    if(!checks.special) missing.push('ອັກຂະລະພິເສດ !@#$');
+                    if(!checks.long) missing.push('ຢ່າງໜ້ອຍ 8 ຕົວ');
+                    NotificationManager.error('ລະຫັດຜ່ານບໍ່ເຂັ້ມແຂງ! ຍັງຂາດ: ' + missing.join(', '));
                     return;
                 }
 
@@ -2887,18 +2993,14 @@ function togglePw(id, btn) {
                     session_token: newToken
                 }).eq('id', currentUser.id);
                 
-                // ອັບເດດ session ຂອງ user ປັດຈຸບັນ (re-login ຕົວເອງ)
                 currentUser.password = newPass;
                 currentUser.session_token = newToken;
                 this.saveUserSession();
                 hideProcessing();
-                NotificationManager.success('ປ່ຽນລະຫັດຜ່ານສຳເລັດ! ທຸກ Device ອື່ນຈະຖືກ Logout ອັດຕະໂນມັດ');
+                NotificationManager.success('ປ່ຽນລະຫັດຜ່ານສຳເລັດ!');
                 
-                // Reset form
-                document.getElementById('current-password').value = '';
-                document.getElementById('new-password').value = '';
-                document.getElementById('confirm-password').value = '';
-                router.back();
+                // Reload ໜ້າເວັບໃໝ່
+                setTimeout(() => { location.reload(); }, 1500);
             },
 
             navProfile: function() {
@@ -2963,22 +3065,25 @@ function togglePw(id, btn) {
             },
 
             openForgotPage: function() {
-                document.getElementById('forgot2-username').value = '';
+                const wrap = document.getElementById('forgot2-username-wrap');
+                if(wrap) wrap.style.display = currentUser ? 'none' : 'block';
                 document.getElementById('forgot2-pin').value = '';
+                if(!currentUser && document.getElementById('forgot2-username')) document.getElementById('forgot2-username').value = '';
                 router.show('view-forgot');
             },
 
             openForgotFromProfile: function() {
-                document.getElementById('forgot2-username').value = '';
+                const wrap = document.getElementById('forgot2-username-wrap');
+                if(wrap) wrap.style.display = 'none'; // login อยู่แล้ว ซ่อน username
                 document.getElementById('forgot2-pin').value = '';
                 router.show('view-forgot');
             },
 
             verifyForgotPin2: async function() {
-                const username = document.getElementById('forgot2-username').value.trim();
                 const pin = document.getElementById('forgot2-pin').value.trim();
+                const username = currentUser ? currentUser.username : document.getElementById('forgot2-username').value.trim();
                 if(!username || !pin) { NotificationManager.warning('ກະລຸນາກອກຂໍ້ມູນໃຫ້ຄົບ'); return; }
-                showProcessing('ກຳລັງຕິດຕໍ່...');
+                showProcessing('ກຳລັງກວດສອບ...');
                 try {
                     const { data } = await _supabase.from('site_users').select('id,pin').eq('username', username).maybeSingle();
                     hideProcessing();
@@ -2987,6 +3092,10 @@ function togglePw(id, btn) {
                     this._forgotUserId = data.id;
                     document.getElementById('reset2-password').value = '';
                     document.getElementById('reset2-confirm').value = '';
+                    const fill = document.getElementById('reset-strength-fill');
+                    const hint = document.getElementById('reset-strength-hint');
+                    if(fill) { fill.style.width='0%'; fill.style.background='#333'; }
+                    if(hint) { hint.style.color='#aaa'; hint.textContent='ລະຫັດຜ່ານຕ້ອງມີ: ຕົວພິມໃຫຍ່ (A-Z) + ຕົວພິມນ້ອຍ (a-z) + ຕົວເລກ (0-9) + ອັກຂະລະພິເສດ (!@#$)'; }
                     router.show('view-reset');
                 } catch(e) { hideProcessing(); NotificationManager.error('ເກີດຂໍ້ຜິດພາດ'); }
             },
@@ -2996,7 +3105,25 @@ function togglePw(id, btn) {
                 const cf = document.getElementById('reset2-confirm').value;
                 if(!pw || !cf) { NotificationManager.warning('ກະລຸນາກອກລະຫັດຜ່ານ'); return; }
                 if(pw !== cf) { NotificationManager.error('ລະຫັດຜ່ານບໍ່ຕົງກັນ'); return; }
-                if(pw.length < 6) { NotificationManager.error('ລະຫັດຕ້ອງມີຢ່າງໜ້ອຍ 6 ຕົວ'); return; }
+                // ກວດ strength
+                const checks = {
+                    upper: /[A-Z]/.test(pw),
+                    lower: /[a-z]/.test(pw),
+                    num: /[0-9]/.test(pw),
+                    special: /[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(pw),
+                    long: pw.length >= 8
+                };
+                const score = Object.values(checks).filter(Boolean).length;
+                if(score < 5) {
+                    let missing = [];
+                    if(!checks.upper) missing.push('ຕົວພິມໃຫຍ່ A-Z');
+                    if(!checks.lower) missing.push('ຕົວພິມນ້ອຍ a-z');
+                    if(!checks.num) missing.push('ຕົວເລກ 0-9');
+                    if(!checks.special) missing.push('ອັກຂະລະພິເສດ !@#$');
+                    if(!checks.long) missing.push('ຢ່າງໜ້ອຍ 8 ຕົວ');
+                    NotificationManager.error('ລະຫັດຜ່ານບໍ່ເຂັ້ມແຂງ! ຍັງຂາດ: ' + missing.join(', '));
+                    return;
+                }
                 showProcessing('ກຳລັງບັນທຶກ...');
                 try {
                     const { error } = await _supabase.from('site_users').update({ password: pw }).eq('id', this._forgotUserId);
@@ -3004,9 +3131,7 @@ function togglePw(id, btn) {
                     if(error) throw error;
                     NotificationManager.success('ປ່ຽນລະຫັດຜ່ານສຳເລັດ!');
                     this._forgotUserId = null;
-                    router.show('view-login');
-                    ['forgot-form','reset-form'].forEach(id => { const el=document.getElementById(id); if(el) el.style.display='none'; });
-                    document.getElementById('login-form').style.display = 'block';
+                    setTimeout(() => { location.reload(); }, 1500);
                 } catch(e) { hideProcessing(); NotificationManager.error('ເກີດຂໍ້ຜິດພາດ'); }
             },
 
